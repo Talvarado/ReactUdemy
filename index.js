@@ -88,3 +88,33 @@ app.listen(PORT); // instructs express to tell node that it wants to listen to i
 //***** main goal get a id into the users cookie so that they cookie will us who they are eveytime they make a request */
 
 //auth end
+
+
+
+//React start
+//npm install -g create-react-app // starter package for react
+//create-react-app client ////// must do this in server, very important to call it client // it will create our folder client which will have all out react stuff in it
+// the client folder has its own built in server, thus to start the react portion we run "npm start"
+//this means react has their own server so our project will have a 2nd server, setup easy, understanding it not so much
+
+//express server serves up data
+//react server serves up compnents for visual client purposes
+//we use two servers is because create react app has already a lot of great things in it, rather than trying to wire bable and webpack and 100+ to the express server
+//getting them to work together is simple and straight forward
+//LOOK AT DIAGRAM WHY TWO SERVERS
+
+//to get both server running together we :
+//use CUNCURENTLY that helps us run two seperate servers with one command
+//we added two scripts on our server package.json,
+//1st to start our client side server ("client": "npm run start --prefix client") // --prefix clien means to run it from our client folder
+//2nd to start both togteher "dev": "concurrently \"npm run server\" \"npm run client\"" => npm start dev
+//we had to install concurrently module, it will start both servers at the same time
+
+//run back end now with npm run server // before it was npm run dev but we changed t to make both servers work together
+//to run front end npm run start
+
+// netstat -ano | findstr :3000
+
+//taskkill //PID 16948 //f
+
+
