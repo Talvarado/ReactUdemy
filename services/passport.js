@@ -20,7 +20,8 @@ passport.use(
     new GoogleStrategy({
         clientID: keys.googleClientID,
         clientSecret: keys.googleClientSecret,
-        callbackURL: '/auth/google/callback'
+        callbackURL: '/auth/google/callback',
+        proxy: true ////we have to add another  to our google strategy because google doesnt know to trust heroku, turn https into http which is not safe
     }, (accessToken, refreshToken, profile, done) => {
         User.findOne({ //a query to search our mongo db
             googleId: profile.id //look though the records and find the first record with the same google id 
@@ -65,5 +66,6 @@ passport.use(
 //passaport will take that request and take the cookie, identify the user and return the users information after authenticating them (deserializedUser) takes cookie and turns it into user info
 
 //last thing is make passaport aware that it needs to use Cookies to take care of the user authentication
+
 
 
