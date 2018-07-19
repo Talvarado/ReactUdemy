@@ -34,8 +34,8 @@ app.use(passaport.session());
 require('./routes/authRoutes')(app); //so we can use our handelers in our routes.js. wee call the function imidietly calls app right after
 
 // const PORT = process.env.PORT || 5000; // when heroku runs our app, it will enject environent varables, esentially heruku passes us a confguration that heroku wants to tells us when are app starts to be executed by heroku, checks which port heroku wants us to use
-const PORT = process.env.PORT;
-app.listen(PORT); // instructs express to tell node that it wants to listen to incoming traffic on port we declare or port 5000
+const PORTNUM = process.env.PORT;
+app.listen(PORTNUM); // instructs express to tell node that it wants to listen to incoming traffic on port we declare or port 5000
 
 
 //NOTES
