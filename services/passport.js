@@ -22,7 +22,8 @@ passport.use(
         clientSecret: keys.googleClientSecret,
         callbackURL: '/auth/google/callback',
         proxy: true ////we have to add another  to our google strategy because google doesnt know to trust heroku, turn https into http which is not safe
-    }, (accessToken, refreshToken, profile, done) => {
+    }, 
+    (accessToken, refreshToken, profile, done) => {
         User.findOne({ //a query to search our mongo db
             googleId: profile.id //look though the records and find the first record with the same google id 
         }).then((existingUser) => { //.then is a promise which will do something depending on what happens

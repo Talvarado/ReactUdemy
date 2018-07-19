@@ -118,3 +118,11 @@ app.listen(PORT); // instructs express to tell node that it wants to listen to i
 //taskkill //PID 16948 //f
 
 
+//"proxy": {
+    // "/auth/google" : {
+    //     "target": "http://localhost:5000"
+    //   }
+
+//makes both serves work together nicely
+
+
