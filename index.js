@@ -1,8 +1,8 @@
-
 const express = require ('express'); // import express library, we write it like this for server side, react side uses 'import'. COMMON JS MODULES
 const mongoose = require('mongoose'); //import mongoose library
 const cookieSession = require('cookie-session'); //import cookiesession
 const passaport = require('passport'); //import passport since we need to tell passport to use cookies with cookie session 
+const bodyParser = require('body-parser'); //this is a iddleware to help with parsing token when using stripe and express
 const keys = require ('./config/keys'); //import keys we need to use mongoos
 require('./models/User') //imports configuration from our users file
 require ('./services/passport'); //import passaport from our passaport file
@@ -10,6 +10,8 @@ require ('./services/passport'); //import passaport from our passaport file
 mongoose.connect(keys.mongoURI); //we paste in out mlab (To connect using a driver via the standard MongoDB URI), 
 const app = express(); //  CREATES FIRST EXPRESS APPLICATION, we call it as a functon so that it represents it as an applcation. app is used to set up confguration that listens for requests and route them to the handelers
 
+
+app.use(bodyParser.json()); //this is for all request that will parse the boody and assign it to req.wait for billing routes.js
 
 //app.use are wiring up as Middleware (small functions that are used to modify our incoming requests in our app before they are sent off to the route handelers)
 //look at diagram 
@@ -32,9 +34,10 @@ app.use(passaport.initialize());
 app.use(passaport.session());
 
 require('./routes/authRoutes')(app); //so we can use our handelers in our routes.js. wee call the function imidietly calls app right after
+require('./routes/billingRoutes')(app);
 
 // const PORT = process.env.PORT || 5000; // when heroku runs our app, it will enject environent varables, esentially heruku passes us a confguration that heroku wants to tells us when are app starts to be executed by heroku, checks which port heroku wants us to use
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT); // instructs express to tell node that it wants to listen to incoming traffic on port we declare or port 5000
 
 
@@ -124,5 +127,30 @@ app.listen(PORT); // instructs express to tell node that it wants to listen to i
     //   }
 
 //makes both serves work together nicely
+// if anyone makes a request trys to vst /auth/google on our react server, automatically forward the request to local host 5000/auth/google
+//look at Dev Mode diagram (only for our dev environment) , heroku takes care of the production side 
+// IN PRODUCTION THE CREATE REACT SERVER DOES NOT EXIST!! //that is why we dont have to specify in our proxy our actual website url
+//heroku will use our build to run the entire app
+//thats why we only use relastive routes in production (/auth/google)
+//proxy purpose : beacuse we are runnin gto servers in our dev environment, so any request in react server needs to be proxied to our express serve
 
 
+//ARCHITECUTE BONUS VID 56 *
+// dotn have to worry about json web tokens, our react headers etc
+// we dont have to worry about CORS
+//VERY GOOD DIAGRAM OF ENTIRE OAUTH FLOW BOR DEV AND FOR PROD 
+//BASICALLY WE ONLY NEEDED TO ADD THE PROXY(PACKAGE.JSON/CLIENT) TO MAKE EVERYTHING WORK...
+
+
+//all client stuuff needs to be installed inside of client
+//we must do action creators, reducers to wire up eveything properly front end
+
+//we will now install stripe for billing purposes in our client side
+//npm install --save react-stripe-checkout
+//organize keys in backen
+//organize keys in front end
+// we now have finsihed credits
+
+//we have to deply onto heroku,,, we deploy differentlyt hen usual
+//video108
+//we have to run npm run build (in client)

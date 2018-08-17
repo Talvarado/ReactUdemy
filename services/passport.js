@@ -23,22 +23,17 @@ passport.use(
         callbackURL: '/auth/google/callback',
         proxy: true ////we have to add another  to our google strategy because google doesnt know to trust heroku, turn https into http which is not safe
     }, 
-    (accessToken, refreshToken, profile, done) => {
-        User.findOne({ //a query to search our mongo db
-            googleId: profile.id //look though the records and find the first record with the same google id 
-        }).then((existingUser) => { //.then is a promise which will do something depending on what happens
+    async (accessToken, refreshToken, profile, done) => {
+        const existingUser = await User.findOne({ //a query to search our mongo db
+            googleId: profile.id}) //look though the records and find the first record with the same google id 
             if (existingUser){
                 //we already have a record with the gven profile id
-                done(null, existingUser); //we need to pass two thing to done, 1 if everything went well, 2nd will give us the existing user record (We are all done, here is the user we found)
-            } else {
-                //we want to create a new user because we dont have any with that id
-                new User({ //this creates a mongo model instance (a single recod in our collection)
-                    googleId: profile.id})   //this represents one recor, it creates a new instance of a model
-                .save() //.save so that as soon as it retrieves the info it saves it (saves instance)
-                .then(user => done(null,user)); //we do this to MAKE COMPLETE SURE that we saved the user to the database before we call done
+                return done(null, existingUser); //we need to pass two thing to done, 1 if everything went well, 2nd will give us the existing user record (We are all done, here is the user we found)
+            }//we want to create a new user because we dont have any with that id
+                const user = await new User({ googleId: profile.id}).save() //this creates a mongo model instance (a single recod in our collection) //.save so that as soon as it retrieves the info it saves it (saves instance) //this represents one recor, it creates a new instance of a model
+                done(null,user); //we do this to MAKE COMPLETE SURE that we saved the user to the database before we call done
             } //with callbacks we can save a record that represents a new user
-        }) // anytime we use our mongoose db (to search, delete,change) we are dong a asychronse action, whch eans it doesnt return results, t returns a promise, we need a return statement
-    })
+        ) // anytime we use our mongoose db (to search, delete,change) we are dong a asychronse action, whch eans it doesnt return results, t returns a promise, we need a return statement
 );// tell our passport how to use google strategy and make use of it =>passport.use general way to tell passport to use google strategy => new GoogleStrategy() creates a new instance of a google authentification, inside function we will pass in a configuration
 // we need to give it a client id and client secret, bot provded to us by googles oauth servce
 // we must regster with google api, so google knows that we will be using their service to auth our users
@@ -68,5 +63,41 @@ passport.use(
 
 //last thing is make passaport aware that it needs to use Cookies to take care of the user authentication
 
+//es6 sytax practice ***
+//write a function to retrive a blob of json, thus make a ajax request
+// use 'fetch' function
+//https://rallycoding.herokuapp.com/api/music_albums
+
+// function fetchAlbums () {
+//     fetch ('https://rallycoding.herokuapp.com/api/music_albums') //when we use fetch, it returns a promise, that promise is resolved with an object that represents the underlying request
+//     .then(res => res.json()) // we add .thn to make sure that our request has been recieved  //weturns a response object, we have to call res.json which returns its own promise.
+//     .then(json => console.log(json)); // we console.log the json file
+// }
+
+// fetchAlbums();
+// //paste all this in console log
+
+// //es6 syntax //asynchronis code => of or requiring a form of computer control timing protocol in which a specific operation begins upon receipt of an indication (signal) that the preceding operation has been completed.
+// //refactor
+// async function fetchAlbums () {
+//    const res = await fetch ('https://rallycoding.herokuapp.com/api/music_albums') //when we use fetch, it returns a promise, that promise is resolved with an object that represents the underlying request
+//     const json = await res.json() // we add .thn to make sure that our request has been recieved  //weturns a response object, we have to call res.json which returns its own promise.
+//     console.log(json); // we console.log the json file
+// }
+
+// //await key word infron of any statement that produces a promise ans assigned it to a variable 
+
+// fetchAlbums();
+
+// //es6 arrow function
+// const fetchAlbums = async () => {
+//     const res = await fetch ('https://rallycoding.herokuapp.com/api/music_albums') //when we use fetch, it returns a promise, that promise is resolved with an object that represents the underlying request
+//      const json = await res.json() // we add .thn to make sure that our request has been recieved  //weturns a response object, we have to call res.json which returns its own promise.
+//      console.log(json); // we console.log the json file
+//  }
+ 
+//  //await key word infron of any statement that produces a promise ans assigned it to a variable 
+ 
+//  fetchAlbums();
 
 
